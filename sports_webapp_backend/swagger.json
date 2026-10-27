@@ -1,0 +1,113 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Perfiles de Jugadores y Rosters eSports",
+    "version": "1.0.0",
+    "description": "API REST para gestionar jugadores y armar rosters para equipos de eSports"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1"
+    }
+  ],
+  "paths": {
+    "/jugadores": {
+      "get": {
+        "summary": "Listar jugadores",
+        "parameters": [
+          { "name": "rol", "in": "query", "schema": { "type": "string" } },
+          { "name": "estado", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Lista de jugadores" } }
+      },
+      "post": {
+        "summary": "Crear jugador",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nickname", "rol"],
+                "properties": {
+                  "nickname": { "type": "string", "example": "Faker" },
+                  "nombre_real": { "type": "string", "example": "Lee Sang-hyeok" },
+                  "pais": { "type": "string", "example": "Corea del Sur" },
+                  "rol": { "type": "string", "enum": ["Top", "Jungle", "Mid", "ADC", "Support"] },
+                  "estado": { "type": "string", "enum": ["activo", "inactivo"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Jugador creado" },
+          "400": { "description": "Datos inválidos" },
+          "409": { "description": "Nickname ya registrado" }
+        }
+      }
+    },
+    "/rosters": {
+      "get": {
+        "summary": "Listar rosters",
+        "parameters": [
+          { "name": "tipo", "in": "query", "schema": { "type": "string" } },
+          { "name": "temporada", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Lista de rosters" } }
+      },
+      "post": {
+        "summary": "Crear roster",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nombre", "temporada"],
+                "properties": {
+                  "nombre": { "type": "string", "example": "TL Principal" },
+                  "juego": { "type": "string", "example": "League of Legends" },
+                  "tipo": { "type": "string", "enum": ["Principal", "Academy"] },
+                  "temporada": { "type": "string", "example": "2026" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Roster creado" } }
+      }
+    },
+    "/rosters/{id}/jugadores": {
+      "post": {
+        "summary": "Asignar jugador a roster",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_jugador": { "type": "integer" },
+                  "rol_en_roster": { "type": "string", "enum": ["Titular", "Suplente"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Jugador asignado" },
+          "409": { "description": "Conflicto con RN-02 (máx. 5 titulares) o RN-03 (mismo rol)" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Verificar estado de la API",
+        "responses": { "200": { "description": "API Activa" } }
+      }
+    }
+  }
+}
