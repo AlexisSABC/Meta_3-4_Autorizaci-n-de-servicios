@@ -1,0 +1,168 @@
+### Variables Globales
+@baseUrl = http://localhost:3000/api/v1
+
+1. ENDPOINTS AUXILIARES
+### Health Check (Estado de la API)
+GET {{baseUrl}}/health
+
+### Listar Roles Válidos
+GET {{baseUrl}}/roles
+
+### Listar Estados Válidos
+GET {{baseUrl}}/estados
+
+### Listar Tipos de Roster
+GET {{baseUrl}}/tipos-roster
+
+2. MÓDULO DE JUGADORES
+### Listar Todos los Jugadores
+GET {{baseUrl}}/jugadores
+
+### Filtrar Jugadores (Rol, Estado, Búsqueda por Nickname)
+GET {{baseUrl}}/jugadores?rol=Mid&estado=activo&search=faker
+
+### Obtener Detalle de un Jugador por ID
+GET {{baseUrl}}/jugadores/1
+
+### Crear Jugador (Faker - Mid)
+POST {{baseUrl}}/jugadores
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "nickname": "The USER",
+  "nombre_real": "Player_User",
+  "pais": "Corea del Sur",
+  "rol": "Mid",
+  "estado": "Activo"
+}
+
+### Crear Jugador (Impact - Top)
+POST {{baseUrl}}/jugadores
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "nickname": "Impact",
+  "nombre_real": "Jung Eon-yeong",
+  "pais": "Corea del Sur",
+  "rol": "Top",
+  "estado": "Activo"
+}
+
+### Actualizar Jugador por ID
+PUT {{baseUrl}}/jugadores/1
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "nickname": "Faker",
+  "nombre_real": "Lee Sang-hyeok",
+  "pais": "Corea del Sur",
+  "rol": "Mid",
+  "estado": "Inactivo"
+}
+
+### Eliminar Jugador por ID
+DELETE {{baseUrl}}/jugadores/1
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+3. MÓDULO DE ROSTERS
+### Listar Todos los Rosters
+GET {{baseUrl}}/rosters
+
+### Filtrar Rosters (Tipo y Temporada)
+GET {{baseUrl}}/rosters?tipo=Principal&temporada=2026
+
+### Obtener Detalle de un Roster (Incluye Jugadores Asignados)
+GET {{baseUrl}}/rosters/1
+
+### Crear un Nuevo Roster
+POST {{baseUrl}}/rosters
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "nombre": "TL Principal",
+  "juego": "League of Legends",
+  "tipo": "Principal",
+  "temporada": "2026"
+}
+
+### Actualizar Roster
+PUT {{baseUrl}}/rosters/1
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "nombre": "TL Principal 2026",
+  "juego": "League of Legends",
+  "tipo": "Principal",
+  "temporada": "2026"
+}
+
+### Eliminar Roster (Los jugadores permanecen intactos)
+DELETE {{baseUrl}}/rosters/1
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+4. ASIGNACIÓN DE JUGADORES A ROSTERS
+### Listar Jugadores de un Roster Específico
+GET {{baseUrl}}/rosters/1/jugadores
+
+### Asignar Jugador a Roster (Prueba de RN-02 y RN-03)
+POST {{baseUrl}}/rosters/1/jugadores
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "id_jugador": 1,
+  "rol_en_roster": "Titular"
+}
+
+### Cambiar Rol de un Jugador en el Roster (Titular / Suplente)
+PUT {{baseUrl}}/rosters/1/jugadores/1
+Content-Type: application/json
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+{
+  "rol_en_roster": "Suplente"
+}
+
+### Quitar Jugador del Roster
+DELETE {{baseUrl}}/rosters/1/jugadores/1
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@apiKey = esports_api_key_secret_123
+
+### 1. Iniciar sesión como ADMIN (obtiene cookies jwt_token y csrf_token)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "email": "alexis@uabc.edu.mx"
+}
+
+### 2. Verificar Estado de Autenticación
+# (Requiere pasar x-csrf-token devuelto en el login o leído de la cookie csrf_token)
+GET {{baseUrl}}/auth/verify
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
+
+### 3. Logout de ADMIN
+POST {{baseUrl}}/auth/logout
+x-csrf-token: COLOCAR_AQUI_EL_CSRF_TOKEN
